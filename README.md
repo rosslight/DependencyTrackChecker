@@ -21,7 +21,7 @@ This action was inspired from [action-owasp-dependecy-track-check](https://githu
 
 ### `project`
 
-**Required, unless projectname and projectversion are provided** Project uuid in Dependency-Track
+**Required Project uuid in Dependency-Track
 
 ### `bom-filename`
 
