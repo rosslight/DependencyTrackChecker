@@ -1,6 +1,13 @@
 # Upload and check BoM
 
-This action takes an existing BoM, checks it on the remote dependency-track and returns results
+This action assumes that you have an existing [Dependency Track](https://github.com/DependencyTrack/dependency-track) project and a CycloneDX SBOM. Using these pre-requisites it does multiple steps:
+
+1. Upload the SBOM to the specified project
+2. Analyze the project for vulnerabilities and policy violations
+3. Get metric information and offers them for later steps of the pipeline
+4. Download the CycloneDX SBOM from Dependency Track, now with vulnerability information and the additional licenses attached.
+
+This action was inspired from [action-owasp-dependecy-track-check](https://github.com/Quobis/action-owasp-dependecy-track-check) and [gh-upload-sbom](https://github.com/DependencyTrack/gh-upload-sbom).
 
 ## Inputs
 
@@ -30,13 +37,9 @@ Path and filename of the output BOM, default `out-bom.xml`
 
 The computed risk score
 
-## Outputs
-
 ### `vulnerabilities`
 
 The number of vulnerabilities
-
-## Outputs
 
 ### `violations-total`
 
@@ -45,7 +48,7 @@ The total number of violations
 ## Example usage
 
 ```
-uses: Rosslight/DependencyTrackChecker@v1.2
+uses: Rosslight/DependencyTrackChecker@v1.3
 with:
   server-hostname: 'example.com'
   api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
