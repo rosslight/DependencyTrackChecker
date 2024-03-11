@@ -45,10 +45,10 @@ The total number of violations
 ## Example usage
 
 ```
-uses: Rosslight/dependency-track-checker@v1.0.0
+uses: Rosslight/DependencyTrackChecker@v1.2
 with:
-  serverHostname: 'example.com'
-  apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+  server-hostname: 'example.com'
+  api-key: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
   project: 'dadec8ad-7053-4e8c-8044-7b6ef698e08d'
   bom-filename: 'bom.json'
   bom-output-filename: 'out-bom.json'
