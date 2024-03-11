@@ -1,0 +1,13 @@
+{
+  "name": "dependency-track-checker",
+  "version": "1.0.0",
+  "description": "Takes an existing BoM, checks it on the remote dependency-track and returns results",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Rosslight GmbH",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/github": "^6.0.0",
+    "axios": "^1.6.7"
+  }
+}

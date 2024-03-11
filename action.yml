@@ -1,0 +1,30 @@
+name: 'Dependency Track BoM checker'
+description: 'Takes an existing BoM, checks it on the remote dependency-track and returns results'
+inputs:
+  server-hostname:
+    description: 'Dependency-Track hostname'
+    required: true
+  api-key:
+    description: 'Dependency-Track API key'
+    required: true
+  project:
+    description: 'Project in Dependency-Track'
+    required: true
+  bom-filename:
+    description: 'Path and filename of the BOM'
+    default: 'bom.xml'
+    required: false
+  bom-output-filename:
+    description: 'Path and filename to save the output to'
+    default: 'out-bom.xml'
+    required: false
+outputs:
+  risk-score:
+    description: 'The last inherited risc score'
+  vulnerabilities:
+    description: 'The number of vulnerabilities found'
+  violations-total:
+    description: 'The total number of violations found'
+runs:
+  using: 'node20'
+  main: 'index.js'
