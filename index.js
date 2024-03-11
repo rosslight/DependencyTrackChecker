@@ -23,6 +23,14 @@ async function upload_file(server_hostname, api_key, project_uuid, bom_filename)
     return response.data
 }
 
+async function analyze_project(server_hostname, api_key, project_uuid) {
+    const response = await axios.post(`${server_hostname}/api/v1/finding/project/${project_uuid}/analyze`, null, {
+        headers: { 'X-Api-Key': api_key, "accept": "application/json" }
+    })
+    return response.data
+}
+
+
 async function check_token_status(server_hostname, api_key, token) {
     const response = await axios.get(`${server_hostname}/api/v1/bom/token/${token}`, {
         headers: { 'X-Api-Key': api_key }
@@ -57,6 +65,7 @@ function sleep(ms) {
         const project_uuid = core.getInput('project');
         const bom_filename = core.getInput('bom-filename');
         const bom_output_filename = core.getInput('bom-output-filename');
+		const poll_delay = 500;
 
         // Upload the BoM
         console.log(`[*] Starting upload of ${bom_filename} to ${server_hostname} (project=${project_uuid})`);
@@ -65,18 +74,33 @@ function sleep(ms) {
         console.log(`[-] Successfully uploaded ${bom_filename}. Token to track: ${upload_token}`)
 
         // Wait until processing the new BoM has been completed
-        console.log(`[*] Check token status`)
+        console.log(`[*] Check upload token status`)
         var is_processing = true
         while(is_processing) {
-            await sleep(500)
+            await sleep(poll_delay)
             const check_result = await check_token_status(server_hostname, api_key, upload_token)
             is_processing = check_result.processing
-            console.log(`[-] BoM Token status is ${is_processing}`)
+            console.log(`[-] BoM token status is ${is_processing}`)
         }
         console.log(`[-] BoM processing has been successful`)
 
-        // Wait a bit to ensure everything has finished
-        await sleep(500)
+        // Start project analysis (done in a separate step due to upload_token being finished before analysis)
+        console.log(`[*] Starting analysis`);
+        const analysis_result = await analyze_project(server_hostname, api_key, project_uuid)
+        const analysis_token = analysis_result.token;
+        console.log(`[-] Successfully started analysis. Token to track: ${analysis_token}`)
+
+        // Wait until processing the analysis has been completed
+        console.log(`[*] Check analysis token status`)
+        is_processing = true
+        while(is_processing) {
+            await sleep(poll_delay)
+            const check_result = await check_token_status(server_hostname, api_key, analysis_token)
+            is_processing = check_result.processing
+            console.log(`[-] Analysis token status is ${is_processing}`)
+        }
+        console.log(`[-] Analysis processing has been successful`)
+
 
         console.log(`[*] Get project information`)
         const project_information = await get_project_information(server_hostname, api_key, project_uuid)
